@@ -31,6 +31,7 @@
 * [Stream Fusion: From Lists to Streams to Nothing at All](https://dl.acm.org/doi/pdf/10.1145/1291220.1291199) @ ICFP'07 by Oxford
 * [A Catalog of Stream Processing Optimizations](https://dl.acm.org/doi/pdf/10.1145/2528412) @ ACM Computer Survey 2014 by IBM Watson
 * [Tutorial: Stream Processing Optimizations](https://dl.acm.org/doi/pdf/10.1145/2488222.2488268) @ DEBS'13 by IBM Watson
+* [Expressive and Efficient Streaming Libraries](http://biboudis.github.io/papers/dissertation.pdf) @ Athens Ph.D. thesis.
 
 ## Relevant work
 
