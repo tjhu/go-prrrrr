@@ -2,25 +2,26 @@ package stream
 
 import "sync"
 
+type OperatorWorkerFn[In any, Out any] func(in <-chan In, out chan<- Out)
+
 // The concrete implementation of a stream operator.
 type Operator[In any, Out any] struct {
 	num_workers int
-	in          *chan In
-	out         *chan Out
-	worker_fn   func(in *chan In, out *chan Out)
+	in          <-chan In
+	out         chan Out
+	worker_fn   OperatorWorkerFn[In, Out]
 }
 
-func makeOperator[In any, Out any](in *chan In, worker_fn func(in *chan In, out *chan Out)) Operator[In, Out] {
-	out := make(chan Out)
+func makeOperator[In any, Out any](num_workers int, in <-chan In, worker_fn OperatorWorkerFn[In, Out]) Operator[In, Out] {
 	return Operator[In, Out]{
-		num_workers: 1,
+		num_workers: num_workers,
 		in:          in,
 		worker_fn:   worker_fn,
-		out:         &out,
+		out:         make(chan Out),
 	}
 }
 
-func (op *Operator[In, Out]) Iter() *chan Out {
+func (op *Operator[In, Out]) Iter() <-chan Out {
 	return op.out
 }
 
@@ -41,6 +42,7 @@ func (op *Operator[In, Out]) Exec() {
 	wg.Wait()
 }
 
-func (op *Operator[In, Out]) Filter(FilterFn[Out]) IStream[Out] {
-	return &FilterOperator[Out]{}
+func (op *Operator[In, Out]) Filter(filter_fn FilterFn[Out]) IStream[Out] {
+	filter := makeFilterOperator(op.num_workers, op.out, filter_fn)
+	return &filter
 }

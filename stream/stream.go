@@ -2,7 +2,7 @@ package stream
 
 type IStream[T any] interface {
 	// Returns the output channel.
-	Iter() *chan T
+	Iter() <-chan T
 	// Execute the operator and wait for it to finish.
 	Exec()
 	// Set the number of max workers.
