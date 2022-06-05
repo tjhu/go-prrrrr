@@ -2,13 +2,15 @@ package stream
 
 type IStream[T any] interface {
 	// Returns the output channel.
-	Iter() <-chan T
+	Out() <-chan T
 	// Execute the operator and wait for it to finish.
 	Exec()
 	// Set the number of max workers.
 	Workers(num_workers int)
 	// Returns the parent stream.
-	Parent() interface{}
+	Parent() IStream[T]
+	// Return the type of the stream
+	Type() StreamType
 
 	// Returns a filtered stream.
 	Filter(FilterFn[T]) IStream[T]

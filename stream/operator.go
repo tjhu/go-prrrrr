@@ -2,61 +2,77 @@ package stream
 
 import (
 	"sync"
+
+	log "github.com/sirupsen/logrus"
 )
 
-type OperatorWorkerFn[In any, Out any] func(in <-chan In, out chan<- Out)
+type OperatorWorkerFn[T any] func(in <-chan T, out chan<- T)
 
 // The concrete implementation of a stream operator.
-type Operator[In any, Out any] struct {
+type Operator[T any] struct {
 	num_workers int
-	in          <-chan In
-	out         chan Out
-	worker_fn   OperatorWorkerFn[In, Out]
+	parent      IStream[T]
+	out         chan T
+	worker_fn   OperatorWorkerFn[T]
 	name        string
+	ty          StreamType
 }
 
-func makeOperator[In any, Out any](num_workers int, in <-chan In, worker_fn OperatorWorkerFn[In, Out], name string) Operator[In, Out] {
-	return Operator[In, Out]{
+func makeOperator[T any](num_workers int, parent IStream[T], worker_fn OperatorWorkerFn[T], name string, ty StreamType) Operator[T] {
+	return Operator[T]{
 		num_workers: num_workers,
-		in:          in,
+		parent:      parent,
 		worker_fn:   worker_fn,
-		out:         make(chan Out),
+		out:         make(chan T),
 		name:        name,
+		ty:          ty,
 	}
 }
 
-func (op *Operator[In, Out]) Iter() <-chan Out {
+func (op *Operator[T]) Out() <-chan T {
 	return op.out
 }
 
-func (op *Operator[In, Out]) Workers(num_workers int) {
+func (op *Operator[T]) Workers(num_workers int) {
 	op.num_workers = num_workers
 }
 
-func (op *Operator[In, Out]) Exec() {
-	println("Running ", op.name)
+func (op *Operator[T]) Parent() IStream[T] {
+	return op.parent
+}
+
+func (op *Operator[T]) Type() StreamType {
+	return op.ty
+}
+
+func (op *Operator[T]) Exec() {
+	log.Info("Running stage: ", op.name)
 	var wg sync.WaitGroup
+	var in <-chan T
+	if op.parent != nil {
+		in = op.parent.Out()
+	}
 
 	for i := 0; i < op.num_workers; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			op.worker_fn(op.in, op.out)
+			op.worker_fn(in, op.out)
 		}()
 	}
 
 	wg.Wait()
 	close(op.out)
-	println("Finished running ", op.name)
+	log.Info("Finished running stage: ", op.name)
 }
 
-func (op *Operator[In, Out]) Filter(filter_fn FilterFn[Out]) IStream[Out] {
-	filter := makeFilterOperator(op.num_workers, op.out, filter_fn, op.name)
+func (op *Operator[T]) Filter(filter_fn FilterFn[T]) IStream[T] {
+	filter := makeFilterOperator[T](op.num_workers, op, filter_fn, op.name)
 	return &filter
 }
 
-func (op *Operator[In, Out]) ToSlice() []Out {
-	RunDAG[Out](op)
+func (op *Operator[T]) ToSlice() []T {
+	RunDAG[T](op)
 	return toSlice(op.out)
 }
 

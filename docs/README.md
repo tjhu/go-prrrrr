@@ -53,6 +53,12 @@ mpmc queue if necessary.
     })
 ```
 
+## Workloads
+
+* power series of e^x.
+* newton's algorithm for square root.
+* PI square over six series calculation.
+
 
 ## Reading list
 
