@@ -7,6 +7,8 @@ type IStream[T any] interface {
 	Exec()
 	// Set the number of max workers.
 	Workers(num_workers int)
+	// Returns the parent stream.
+	Parent() interface{}
 
 	// Returns a filtered stream.
 	Filter(FilterFn[T]) IStream[T]

@@ -12,7 +12,7 @@ func makeSliceInputOperator[T any](slice []T) SliceInputOperator[T] {
 	}
 
 	return SliceInputOperator[T]{
-		makeSource(worker_fn),
+		makeSource(worker_fn, "Slice"),
 	}
 }
 
