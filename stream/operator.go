@@ -33,6 +33,7 @@ func (op *Operator[In, Out]) Exec() {
 	var wg sync.WaitGroup
 
 	for i := 0; i < op.num_workers; i++ {
+		wg.Add(1)
 		go func() {
 			defer wg.Done()
 			op.worker_fn(op.in, op.out)
@@ -40,9 +41,23 @@ func (op *Operator[In, Out]) Exec() {
 	}
 
 	wg.Wait()
+	close(op.out)
 }
 
 func (op *Operator[In, Out]) Filter(filter_fn FilterFn[Out]) IStream[Out] {
 	filter := makeFilterOperator(op.num_workers, op.out, filter_fn)
 	return &filter
+}
+
+func (op *Operator[In, Out]) ToSlice() []Out {
+	RunDAG[Out](&*op)
+	return toSlice(op.out)
+}
+
+func toSlice[T any](in <-chan T) []T {
+	slice := make([]T, 0)
+	for element := range in {
+		slice = append(slice, element)
+	}
+	return slice
 }

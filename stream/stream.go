@@ -10,6 +10,8 @@ type IStream[T any] interface {
 
 	// Returns a filtered stream.
 	Filter(FilterFn[T]) IStream[T]
+	// Materialize the stream to a slice.
+	ToSlice() []T
 }
 
 // func (stream Stream[T]) Map[T any, R any](fn MapFn[T, R]) Stream[R] {}
