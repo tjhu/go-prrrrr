@@ -10,5 +10,6 @@ type StreamType int
 const (
 	IntermediateType StreamType = iota
 	SourceType
-	TerminalType
+	// Unused. Terminal nodes not physically created.
+	// TerminalType
 )

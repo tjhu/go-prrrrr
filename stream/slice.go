@@ -1,22 +1,23 @@
 package stream
 
-import log "github.com/sirupsen/logrus"
-
 type SliceInputOperator[T any] struct {
 	Source[T]
 }
 
 func makeSliceInputOperator[T any](slice []T) SliceInputOperator[T] {
-	worker_fn := func(out chan<- T) {
-		log.Info("Generating from slice")
-		for _, element := range slice {
-			out <- element
+	index := 0
+	generator := func() (T, bool) {
+		var value T
+		if index >= len(slice) {
+			return value, false
 		}
-		log.Info("Done generating from slice")
+		value = slice[index]
+		index++
+		return value, true
 	}
 
 	return SliceInputOperator[T]{
-		makeSource(worker_fn, "Slice"),
+		makeSource(generator, "Slice"),
 	}
 }
 

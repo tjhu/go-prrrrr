@@ -6,19 +6,21 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type OperatorWorkerFn[T any] func(in <-chan T, out chan<- T)
+type OptionalMapFn[T any] func(data T) (T, bool)
 
 // The concrete implementation of a stream operator.
 type Operator[T any] struct {
+	IStream[T]
+
 	num_workers int
 	parent      IStream[T]
 	out         chan T
-	worker_fn   OperatorWorkerFn[T]
+	worker_fn   OptionalMapFn[T]
 	name        string
 	ty          StreamType
 }
 
-func makeOperator[T any](num_workers int, parent IStream[T], worker_fn OperatorWorkerFn[T], name string, ty StreamType) Operator[T] {
+func makeOperator[T any](num_workers int, parent IStream[T], worker_fn OptionalMapFn[T], name string, ty StreamType) Operator[T] {
 	return Operator[T]{
 		num_workers: num_workers,
 		parent:      parent,
@@ -48,16 +50,24 @@ func (op *Operator[T]) Type() StreamType {
 func (op *Operator[T]) Exec() {
 	log.Info("Running stage: ", op.name)
 	var wg sync.WaitGroup
-	var in <-chan T
-	if op.parent != nil {
-		in = op.parent.Out()
-	}
 
 	for i := 0; i < op.num_workers; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			op.worker_fn(in, op.out)
+
+			switch op.ty {
+			// case SourceType:
+			// var stream IStream[T] = op
+			// stream.Exec()
+			// panic("Source stream should not exec in Operator.")
+			case IntermediateType:
+				for element := range op.parent.Out() {
+					if new_element, more := op.worker_fn(element); more {
+						op.out <- new_element
+					}
+				}
+			}
 		}()
 	}
 
