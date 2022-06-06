@@ -83,7 +83,12 @@ func (op *Operator[T]) Filter(filter_fn FilterFn[T]) IStream[T] {
 	return &filter
 }
 
-func (op *Operator[T]) ToSlice() []T {
-	RunDAG[T](op)
+func (op *Operator[T]) ToSlice(optimizations ...OptimizationKind) []T {
+	optimization := OptimizeKindUnoptimized
+	for _, opt := range optimizations {
+		optimization |= opt
+	}
+
+	RunDAG[T](op, optimization)
 	return ChanToSlice(op.out)
 }
