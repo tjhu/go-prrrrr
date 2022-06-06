@@ -57,10 +57,12 @@ func (op *Operator[T]) Exec() {
 			defer wg.Done()
 
 			switch op.ty {
-			// case SourceType:
-			// var stream IStream[T] = op
-			// stream.Exec()
-			// panic("Source stream should not exec in Operator.")
+			case SourceType:
+				// Dump the generator into the channel.
+				var empty T
+				for element, more := op.worker_fn(empty); more; element, more = op.worker_fn(empty) {
+					op.out <- element
+				}
 			case IntermediateType:
 				for element := range op.parent.Out() {
 					if new_element, more := op.worker_fn(element); more {
@@ -83,13 +85,5 @@ func (op *Operator[T]) Filter(filter_fn FilterFn[T]) IStream[T] {
 
 func (op *Operator[T]) ToSlice() []T {
 	RunDAG[T](op)
-	return toSlice(op.out)
-}
-
-func toSlice[T any](in <-chan T) []T {
-	slice := make([]T, 0)
-	for element := range in {
-		slice = append(slice, element)
-	}
-	return slice
+	return ChanToSlice(op.out)
 }
