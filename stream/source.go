@@ -18,6 +18,6 @@ func makeSource[T any](generator Generator[T], name string) Source[T] {
 	}
 
 	return Source[T]{
-		makeOperator(1, nil, worker_fn, fmt.Sprintf("Source-%s", name), SourceType),
+		makeOperator(1, nil, worker_fn, fmt.Sprintf("Source<%s>", name), SourceType),
 	}
 }
