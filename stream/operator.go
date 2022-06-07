@@ -7,6 +7,7 @@ import (
 )
 
 type OptionalMapFn[T any] func(data T) (T, bool)
+type BatchGeneratorFn[T any] func(batch_size int) ([]T, bool)
 
 // The concrete implementation of a stream operator.
 type Operator[T any] struct {
@@ -17,15 +18,17 @@ type Operator[T any] struct {
 	out         chan T
 	batched_out chan []T
 	worker_fn   OptionalMapFn[T]
+	batch_gen   BatchGeneratorFn[T] // This doesn't belong here. It belongs to Source.
 	name        string
 	ty          StreamType
 }
 
-func makeOperator[T any](num_workers int, parent IStream[T], worker_fn OptionalMapFn[T], name string, ty StreamType) Operator[T] {
+func makeOperator[T any](num_workers int, parent IStream[T], worker_fn OptionalMapFn[T], batch_gen BatchGeneratorFn[T], name string, ty StreamType) Operator[T] {
 	return Operator[T]{
 		num_workers: num_workers,
 		parent:      parent,
 		worker_fn:   worker_fn,
+		batch_gen:   batch_gen,
 		out:         make(chan T),
 		batched_out: make(chan []T),
 		name:        name,
@@ -96,9 +99,8 @@ func (op *Operator[T]) BatchExec(batch_size int) {
 			switch op.ty {
 			case StreamTypeSource:
 				// Dump the generator into the channel.
-				var empty T
-				for element, more := op.worker_fn(empty); more; element, more = op.worker_fn(empty) {
-					log.Panic("find some way to slice the original slice", element)
+				for elements, more := op.batch_gen(batch_size); more; elements, more = op.batch_gen(batch_size) {
+					op.batched_out <- elements
 				}
 			case StreamTypeIntermediate:
 				var buffer []T
@@ -125,7 +127,6 @@ func (op *Operator[T]) BatchExec(batch_size int) {
 								// Swap the second buffer in in case there're more stuff in `elements`
 								buffer = buffer2
 							}
-
 						}
 					}
 
@@ -141,6 +142,7 @@ func (op *Operator[T]) BatchExec(batch_size int) {
 
 	wg.Wait()
 	close(op.out)
+	close(op.batched_out)
 	log.Info("Finished running stage: ", op.name)
 }
 
@@ -155,6 +157,13 @@ func (op *Operator[T]) ToSlice(optimizations ...OptimizationKind) []T {
 		optimization |= opt
 	}
 
+	// Run the operators
 	RunDAG[T](op, optimization)
-	return ChanToSlice(op.out)
+
+	// Ouput to slice
+	if optimization&OptimizeKindBatching == 0 {
+		return ChanToSlice(op.out)
+	} else {
+		return BatchChanToSlice(op.batched_out)
+	}
 }

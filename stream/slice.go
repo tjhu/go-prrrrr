@@ -16,8 +16,15 @@ func makeSliceInputOperator[T any](slice []T) SliceInputOperator[T] {
 		return value, true
 	}
 
+	batch_generator := func(batch_size int) ([]T, bool) {
+		output_size := Min(len(slice), batch_size)
+		new_batch := slice[:output_size]
+		slice = slice[output_size:]
+		return new_batch, output_size <= 0
+	}
+
 	return SliceInputOperator[T]{
-		makeSource(generator, "Slice"),
+		makeSource(generator, batch_generator, "Slice"),
 	}
 }
 

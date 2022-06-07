@@ -11,7 +11,9 @@ const (
 	OptimizeKindBatching
 )
 
-const BATCH_SIZE int = 1024
+// A global variable to control the batch size.
+// It's ugly but I dont' have time for this.
+var BATCH_SIZE int = 1024
 
 func OptimizeBatching[T any](stream IStream[T]) IStream[[]T] {
 	panic("asd")
