@@ -16,6 +16,6 @@ func makeFilterOperator[T any](num_workers int, parent IStream[T], filter_fn Fil
 	}
 
 	return FilterOperator[T]{
-		makeOperator(num_workers, parent, map_fn, fmt.Sprintf("Filter-%s", name), IntermediateType),
+		makeOperator(num_workers, parent, map_fn, fmt.Sprintf("Filter-%s", name), StreamTypeIntermediate),
 	}
 }

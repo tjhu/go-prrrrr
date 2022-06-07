@@ -11,8 +11,8 @@ const (
 	OptimizeKindBatching
 )
 
-func OptimizeBatching[T any](stream IStream[T]) IStream[T] {
-	return stream
+func OptimizeBatching[T any](stream IStream[T]) IStream[[]T] {
+	panic("asd")
 }
 
 func OptimizeOperatorMerging[T any](stream IStream[T]) IStream[T] {
@@ -25,10 +25,10 @@ func RunDAG[T any](stream IStream[T], optimizations OptimizationKind) {
 	}
 
 	if optimizations&OptimizeKindBatching != 0 {
-		stream = OptimizeBatching(stream)
+		panic("asd")
 	}
 
-	for ; stream.Type() == IntermediateType; stream = stream.Parent() {
+	for ; stream.Type() == StreamTypeIntermediate; stream = stream.Parent() {
 		go stream.Exec()
 	}
 	go stream.Exec()

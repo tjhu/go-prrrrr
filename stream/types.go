@@ -1,15 +1,15 @@
 package stream
 
-type MapFn[T any, R any] func(T) R
-
 type Void struct{}
+type Any interface{}
 
 // StreamType
 type StreamType int
 
 const (
-	IntermediateType StreamType = iota
-	SourceType
-	// Unused. Terminal nodes not physically created.
-	// TerminalType
+	StreamTypeSource StreamType = iota
+	StreamTypeBatchedSource
+	StreamTypeIntermediate
+	StreamTypeBatchedIntermediate
+	// Terminal nodes not physically created so there's no type for it.
 )
