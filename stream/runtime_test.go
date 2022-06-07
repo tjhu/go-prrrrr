@@ -17,16 +17,22 @@ func TestSmallBatch(t *testing.T) {
 	run_test := func(t *testing.T) {
 		logrus.Info("Testing batch size ", batch_size)
 
-		// Original
-		assert.ElementsMatch(t, slice, OfSlice(slice).ToSlice(OptimizeKindBatching))
+		// Unmodified
+		t.Run("unmodified", func(t *testing.T) {
+			assert.ElementsMatch(t, slice, OfSlice(slice).ToSlice(OptimizeKindBatching))
+		})
 
 		// Greater than 10
-		greater_than_ten := func(x int) bool { return x > 10 }
-		assert.ElementsMatch(t, []int{100}, OfSlice(slice).Filter(greater_than_ten).ToSlice(OptimizeKindBatching))
+		t.Run("Greater10", func(t *testing.T) {
+			greater_than_ten := func(x int) bool { return x > 10 }
+			assert.ElementsMatch(t, []int{100}, OfSlice(slice).Filter(greater_than_ten).ToSlice(OptimizeKindBatching))
+		})
 
 		// Less than 10
-		less_than_ten := func(x int) bool { return x < 10 }
-		assert.ElementsMatch(t, []int{1, 2, 3, 4}, OfSlice(slice).Filter(less_than_ten).ToSlice(OptimizeKindBatching))
+		t.Run("Less10", func(t *testing.T) {
+			less_than_ten := func(x int) bool { return x < 10 }
+			assert.ElementsMatch(t, []int{1, 2, 3, 4}, OfSlice(slice).Filter(less_than_ten).ToSlice(OptimizeKindBatching))
+		})
 	}
 
 	for _, batch_size = range batch_sizes {
@@ -37,19 +43,30 @@ func TestSmallBatch(t *testing.T) {
 func TestBatchLargeSlice(t *testing.T) {
 	slice := lo.Range(10000)
 	batch_sizes := []int{1, 2, 3, 4, 5, 6, 100, 999}
+	var batch_size int
 
-	for batch_size := range batch_sizes {
+	run_test := func(t *testing.T) {
 		logrus.Info("Testing batch size ", batch_size)
 
-		// Original
-		assert.ElementsMatch(t, slice, OfSlice(slice).ToSlice(OptimizeKindBatching))
+		// Unmodified
+		t.Run("unmodified", func(t *testing.T) {
+			assert.ElementsMatch(t, slice, OfSlice(slice).ToSlice(OptimizeKindBatching))
+		})
 
 		// Greater than 10
-		greater_than_ten := func(x int) bool { return x > 10 }
-		assert.Equal(t, 99990, len(OfSlice(slice).Filter(greater_than_ten).ToSlice(OptimizeKindBatching)))
+		t.Run("Greater10", func(t *testing.T) {
+			greater_than_ten := func(x int) bool { return x > 10 }
+			assert.Equal(t, 99990, len(OfSlice(slice).Filter(greater_than_ten).ToSlice(OptimizeKindBatching)))
+		})
 
 		// Less than 10
-		less_than_ten := func(x int) bool { return x < 10 }
-		assert.Equal(t, 10, len(OfSlice(slice).Filter(less_than_ten).ToSlice(OptimizeKindBatching)))
+		t.Run("Less10", func(t *testing.T) {
+			less_than_ten := func(x int) bool { return x < 10 }
+			assert.Equal(t, 10, len(OfSlice(slice).Filter(less_than_ten).ToSlice(OptimizeKindBatching)))
+		})
+	}
+
+	for _, batch_size = range batch_sizes {
+		t.Run(fmt.Sprint("batch_size=", batch_size), run_test)
 	}
 }
