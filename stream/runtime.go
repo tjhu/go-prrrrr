@@ -11,6 +11,8 @@ const (
 	OptimizeKindBatching
 )
 
+const BATCH_SIZE int = 1024
+
 func OptimizeBatching[T any](stream IStream[T]) IStream[[]T] {
 	panic("asd")
 }
@@ -25,11 +27,15 @@ func RunDAG[T any](stream IStream[T], optimizations OptimizationKind) {
 	}
 
 	if optimizations&OptimizeKindBatching != 0 {
-		panic("asd")
-	}
-
-	for ; stream.Type() == StreamTypeIntermediate; stream = stream.Parent() {
+		for ; stream.Type() == StreamTypeIntermediate; stream = stream.Parent() {
+			go stream.BatchExec(BATCH_SIZE)
+		}
+		go stream.BatchExec(BATCH_SIZE)
+	} else {
+		for ; stream.Type() == StreamTypeIntermediate; stream = stream.Parent() {
+			go stream.Exec()
+		}
 		go stream.Exec()
 	}
-	go stream.Exec()
+
 }
