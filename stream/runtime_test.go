@@ -53,7 +53,7 @@ func TestBatchLargeSlice(t *testing.T) {
 		t.Run("Greater10", func(t *testing.T) {
 			slice := lo.Range(10000)
 			greater_than_ten := func(x int) bool { return x > 10 }
-			assert.Equal(t, 99990, len(OfSlice(slice).Filter(greater_than_ten).ToSlice(OptimizeKindBatching)))
+			assert.Equal(t, 9989, len(OfSlice(slice).Filter(greater_than_ten).ToSlice(OptimizeKindBatching)))
 		})
 
 		// Less than 10
