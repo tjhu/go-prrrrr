@@ -20,7 +20,7 @@ func makeSliceInputOperator[T any](slice []T) SliceInputOperator[T] {
 		output_size := Min(len(slice), batch_size)
 		new_batch := slice[:output_size]
 		slice = slice[output_size:]
-		return new_batch, output_size <= 0
+		return new_batch, output_size > 0
 	}
 
 	return SliceInputOperator[T]{
