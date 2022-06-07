@@ -132,7 +132,7 @@ func (op *Operator[T]) BatchExec(batch_size int) {
 
 					// Flush buffer if there's any remaining stuff.
 					if buffer_size > 0 {
-						op.batched_out <- buffer
+						op.batched_out <- buffer[:buffer_size]
 						buffer_size = 0
 					}
 				}
