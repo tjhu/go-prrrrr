@@ -1,7 +1,6 @@
 ---
 documentclass: IEEEtran
 classoption: 
-- sigplan
 - onecolumn
 title:  '_go-prrrrr_: Scalable Parallel Stream Processing Library'
 author: Tianjiao Huang
