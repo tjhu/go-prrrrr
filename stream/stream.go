@@ -10,7 +10,7 @@ type IStream[T any] interface {
 	// Execute the batch version of the operator.
 	BatchExec(batch_size int)
 	// Set the number of max workers.
-	Workers(num_workers int)
+	Workers(num_workers int) IStream[T]
 	// Returns the parent stream.
 	Parent() IStream[T]
 	// Return the type of the stream
