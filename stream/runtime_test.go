@@ -140,3 +140,27 @@ func TestOperatorMerging(t *testing.T) {
 		assert.ElementsMatch(t, []int{3, 5, 7, 9, 21, 201}, OfSlice(slice).Map(multiply).Map(add).ToSlice(OptimizeKindOperatorMerging))
 	})
 }
+
+func TestMergingAndBatching(t *testing.T) {
+	batch_sizes := []int{1, 2, 3, 4, 5, 6, 100, 999}
+	even := func(x int) bool { return x%2 == 0 }
+	odd := func(x int) bool { return x%2 != 0 }
+	multiply := func(x int) int { return x * 2 }
+	add := func(x int) int { return x + 1 }
+
+	run_test := func(t *testing.T) {
+		t.Run("Half", func(t *testing.T) {
+			slice := lo.Range(10000)
+			assert.Equal(t, 5000, len(OfSlice(slice).Filter(even).Map(add).Filter(odd).ToSlice(OptimizeKindAll)))
+		})
+
+		t.Run("Whole", func(t *testing.T) {
+			slice := lo.Range(10000)
+			assert.Equal(t, 10000, len(OfSlice(slice).Map(multiply).Filter(even).Map(add).Filter(odd).ToSlice(OptimizeKindBatching)))
+		})
+	}
+
+	for _, BATCH_SIZE = range batch_sizes {
+		t.Run(fmt.Sprint("batch_size=", BATCH_SIZE), run_test)
+	}
+}
