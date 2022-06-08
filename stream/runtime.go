@@ -54,7 +54,7 @@ func OptimizeOperatorMerging[T any](stream IStream[T]) IStream[T] {
 
 func RunDAG[T any](stream IStream[T], optimizations OptimizationKind) {
 	if optimizations&OptimizeKindOperatorMerging != 0 {
-		// stream = OptimizeOperatorMerging(stream)
+		stream = OptimizeOperatorMerging(stream)
 	}
 
 	if optimizations&OptimizeKindBatching != 0 {

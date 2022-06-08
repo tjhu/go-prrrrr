@@ -108,3 +108,20 @@ func TestBatchLargeSlice(t *testing.T) {
 		t.Run(fmt.Sprint("batch_size=", BATCH_SIZE), run_test)
 	}
 }
+
+func TestOptimizeOperatorMergingDepth(t *testing.T) {
+	stream := OfSlice([]int{})
+	assert.Equal(t, 1, stream.Depth())
+	optimizedStream := OptimizeOperatorMerging(stream)
+	assert.Equal(t, 1, optimizedStream.Depth())
+	assert.Same(t, stream, optimizedStream)
+
+	for _, depth := range lo.RangeFrom(2, 10) {
+		stream = stream.Filter(nil)
+		assert.Equal(t, depth, stream.Depth())
+		optimizedStream := OptimizeOperatorMerging(stream)
+		assert.Equal(t, 2, optimizedStream.Depth())
+		assert.Equal(t, StreamTypeIntermediate, optimizedStream.Type())
+		assert.Equal(t, StreamTypeSource, optimizedStream.Parent().Type())
+	}
+}

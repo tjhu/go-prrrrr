@@ -155,6 +155,19 @@ func (op *Operator[T]) Name() string {
 	return op.name
 }
 
+func (op *Operator[T]) GetWorkers() int {
+	return op.num_workers
+}
+
+func (op *Operator[T]) Depth() int {
+	var stream IStream[T]
+	ctr := 0
+	for stream = op; stream != nil; stream = stream.Parent() {
+		ctr++
+	}
+	return ctr
+}
+
 func (op *Operator[T]) Filter(filter_fn FilterFn[T]) IStream[T] {
 	filter := makeFilterOperator[T](op.num_workers, op, filter_fn, op.name)
 	return &filter

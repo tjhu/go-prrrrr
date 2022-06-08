@@ -12,11 +12,13 @@ type IStream[T any] interface {
 	BatchExec(batch_size int)
 	// Returns the parent stream.
 	Parent() IStream[T]
-	// Return the type of the stream
-	Type() StreamType
 	// Return the underlaying worker_fn for optimization.
 	GetWorkerFn() OptionalMapFn[T]
 
+	// Return the type of the stream
+	Type() StreamType
+	// Get the depth of the stream.
+	Depth() int
 	// Set the number of max workers.
 	SetWorkers(num_workers int) IStream[T]
 	// Get the number of max workers.
