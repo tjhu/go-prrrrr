@@ -25,15 +25,13 @@ func RunDAG[T any](stream IStream[T], optimizations OptimizationKind) {
 	}
 
 	if optimizations&OptimizeKindBatching != 0 {
-		for ; stream.Type() == StreamTypeIntermediate; stream = stream.Parent() {
+		for ; stream != nil; stream = stream.Parent() {
 			go stream.BatchExec(BATCH_SIZE)
 		}
-		go stream.BatchExec(BATCH_SIZE)
 	} else {
-		for ; stream.Type() == StreamTypeIntermediate; stream = stream.Parent() {
+		for ; stream != nil; stream = stream.Parent() {
 			go stream.Exec()
 		}
-		go stream.Exec()
 	}
 
 }
