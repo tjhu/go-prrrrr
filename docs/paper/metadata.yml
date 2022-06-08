@@ -1,14 +1,18 @@
 ---
-documentclass: IEEEtran
+documentclass: report
 classoption: 
 - onecolumn
+- 
 title:  '_go-prrrrr_: Scalable Parallel Stream Processing Library'
 author: Tianjiao Huang
 institute: University of California, Irvine
 keywords: [nothing, nothingness]
 abstract: |
   \newcommand{\prr}{\textit{go-prrrrr}}
-  \prr{}(__Go__ **P**a**r**allel St**r**eam P**r**ocessing Lib**r**a**r**y) is a scalable parallel stream library in Golang for efficient data pipelines.
+  \newcommand{\go}{Golang}
+  \prr{}(__Go__ **P**a**r**allel St**r**eam P**r**ocessing Lib**r**a**r**y) is a scalable parallel stream library in \go{} for efficient data pipelines.
+  \go{} is known for building efficient large scale server applications with extensive use of asynchronous I/O because of go-routines(green threads) and go-channels(mpmc queues) are first-class citizens in \go{}.
+  However
   This library is a proof-of-concept of various runtime optimizations of stream processing.
   \prr{} allows programmers to express complex pipelines concisely without sacrificing performance.
 ...
