@@ -2,6 +2,12 @@
 
 package stream
 
+import (
+	"fmt"
+
+	log "github.com/sirupsen/logrus"
+)
+
 // OptimizationKind
 type OptimizationKind int
 
@@ -16,12 +22,39 @@ const (
 var BATCH_SIZE int = 1024
 
 func OptimizeOperatorMerging[T any](stream IStream[T]) IStream[T] {
+	parent := stream.Parent()
+	if parent == nil {
+		return stream
+	}
+
+	for ; parent.Type() != StreamTypeSource && parent.Type() == stream.Type(); parent = stream.Parent() {
+		// Merge `parent` and `stream` into one.
+		name := fmt.Sprintf("<%s+%s>", parent.Name(), stream.Name())
+		log.Info("Merging ", parent.Name(), " and ", stream.Name(), " into ", name)
+
+		// Merge two worker_fn into one.
+		old_worker_fn := stream.GetWorkerFn()
+		paren_worker_fn := parent.GetWorkerFn()
+		worker_fn := func(data T) (T, bool) {
+			rtn1, more1 := paren_worker_fn(data)
+			if !more1 {
+				return rtn1, more1
+			}
+
+			rtn2, more2 := old_worker_fn(rtn1)
+			return rtn2, more2
+		}
+
+		new_op := makeOperator(stream.GetWorkers(), parent.Parent(), worker_fn, nil, name, stream.Type())
+		stream = &new_op
+	}
+
 	return stream
 }
 
 func RunDAG[T any](stream IStream[T], optimizations OptimizationKind) {
 	if optimizations&OptimizeKindOperatorMerging != 0 {
-		stream = OptimizeOperatorMerging(stream)
+		// stream = OptimizeOperatorMerging(stream)
 	}
 
 	if optimizations&OptimizeKindBatching != 0 {

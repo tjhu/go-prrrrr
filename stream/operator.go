@@ -147,6 +147,14 @@ func (op *Operator[T]) BatchExec(batch_size int) {
 	log.Info("Finished running stage: ", op.name)
 }
 
+func (op *Operator[T]) GetWorkerFn() OptionalMapFn[T] {
+	return op.worker_fn
+}
+
+func (op *Operator[T]) Name() string {
+	return op.name
+}
+
 func (op *Operator[T]) Filter(filter_fn FilterFn[T]) IStream[T] {
 	filter := makeFilterOperator[T](op.num_workers, op, filter_fn, op.name)
 	return &filter

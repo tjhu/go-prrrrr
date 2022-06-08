@@ -34,7 +34,7 @@ func BenchmarkRandInt(b *testing.B) {
 					slice := lo.Range(size)
 					b.StartTimer()
 					less_than_ten := func(x int) bool { return x < 10 }
-					stream.OfSlice(slice).Filter(less_than_ten).Workers(num_threads).ToSlice()
+					stream.OfSlice(slice).Filter(less_than_ten).SetWorkers(num_threads).ToSlice()
 				}
 			})
 
@@ -47,7 +47,7 @@ func BenchmarkRandInt(b *testing.B) {
 						slice := lo.Range(size)
 						b.StartTimer()
 						less_than_ten := func(x int) bool { return x < 10 }
-						stream.OfSlice(slice).Filter(less_than_ten).Workers(num_threads).ToSlice(stream.OptimizeKindBatching)
+						stream.OfSlice(slice).Filter(less_than_ten).SetWorkers(num_threads).ToSlice(stream.OptimizeKindBatching)
 					}
 				})
 			}

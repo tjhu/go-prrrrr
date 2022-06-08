@@ -1,6 +1,7 @@
 package stream
 
 type IStream[T any] interface {
+	// TODO: turn them into lower case. Private methods.
 	// Returns the output channel.
 	Out() <-chan T
 	// Returns a batching output channel.
@@ -9,13 +10,19 @@ type IStream[T any] interface {
 	Exec()
 	// Execute the batch version of the operator.
 	BatchExec(batch_size int)
-	// Set the number of max workers.
-	Workers(num_workers int) IStream[T]
 	// Returns the parent stream.
 	Parent() IStream[T]
 	// Return the type of the stream
 	Type() StreamType
+	// Return the underlaying worker_fn for optimization.
+	GetWorkerFn() OptionalMapFn[T]
 
+	// Set the number of max workers.
+	SetWorkers(num_workers int) IStream[T]
+	// Get the number of max workers.
+	GetWorkers() int
+	// Return the name of the stream.
+	Name() string
 	// Return a mapped stream.
 	Map(MapFn[T]) IStream[T]
 	// Returns a filtered stream.
