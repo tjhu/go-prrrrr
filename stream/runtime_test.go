@@ -125,3 +125,18 @@ func TestOptimizeOperatorMergingDepth(t *testing.T) {
 		assert.Equal(t, StreamTypeSource, optimizedStream.Parent().Type())
 	}
 }
+
+func TestOperatorMerging(t *testing.T) {
+	multiply := func(x int) int { return x * 2 }
+	add := func(x int) int { return x + 1 }
+
+	t.Run("AddMultiply", func(t *testing.T) {
+		slice := []int{1, 2, 3, 4, 10, 100}
+		assert.ElementsMatch(t, []int{4, 6, 8, 10, 22, 202}, OfSlice(slice).Map(add).Map(multiply).ToSlice(OptimizeKindOperatorMerging))
+	})
+
+	t.Run("MultiplyAdd", func(t *testing.T) {
+		slice := []int{1, 2, 3, 4, 10, 100}
+		assert.ElementsMatch(t, []int{3, 5, 7, 9, 21, 201}, OfSlice(slice).Map(multiply).Map(add).ToSlice(OptimizeKindOperatorMerging))
+	})
+}

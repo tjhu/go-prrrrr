@@ -15,6 +15,7 @@ const (
 	OptimizeKindUnoptimized     OptimizationKind = 0
 	OptimizeKindOperatorMerging OptimizationKind = 1 << iota
 	OptimizeKindBatching
+	OptimizeKindAll OptimizationKind = OptimizeKindOperatorMerging & OptimizeKindBatching
 )
 
 // A global variable to control the batch size.
@@ -29,7 +30,7 @@ func OptimizeOperatorMerging[T any](stream IStream[T]) IStream[T] {
 
 	for ; parent.Type() != StreamTypeSource && parent.Type() == stream.Type(); parent = stream.Parent() {
 		// Merge `parent` and `stream` into one.
-		name := fmt.Sprintf("<%s+%s>", parent.Name(), stream.Name())
+		name := fmt.Sprintf("<%s+%s>", stream.Name(), parent.Name())
 		log.Info("Merging ", parent.Name(), " and ", stream.Name(), " into ", name)
 
 		// Merge two worker_fn into one.
@@ -52,19 +53,20 @@ func OptimizeOperatorMerging[T any](stream IStream[T]) IStream[T] {
 	return stream
 }
 
-func RunDAG[T any](stream IStream[T], optimizations OptimizationKind) {
+func RunDAG[T any](stream IStream[T], optimizations OptimizationKind) IStream[T] {
 	if optimizations&OptimizeKindOperatorMerging != 0 {
 		stream = OptimizeOperatorMerging(stream)
 	}
 
 	if optimizations&OptimizeKindBatching != 0 {
-		for ; stream != nil; stream = stream.Parent() {
-			go stream.BatchExec(BATCH_SIZE)
+		for s := stream; s != nil; s = s.Parent() {
+			go s.BatchExec(BATCH_SIZE)
 		}
 	} else {
-		for ; stream != nil; stream = stream.Parent() {
-			go stream.Exec()
+		for s := stream; s != nil; s = s.Parent() {
+			go s.Exec()
 		}
 	}
 
+	return stream
 }

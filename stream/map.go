@@ -16,6 +16,6 @@ func makeMapOperator[T any](num_workers int, parent IStream[T], map_fn MapFn[T],
 	}
 
 	return FilterOperator[T]{
-		makeOperator(num_workers, parent, map_fn1, nil, fmt.Sprintf("Filter-%s", name), StreamTypeIntermediate),
+		makeOperator(num_workers, parent, map_fn1, nil, fmt.Sprintf("Map-%s", name), StreamTypeIntermediate),
 	}
 }

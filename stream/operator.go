@@ -185,12 +185,12 @@ func (op *Operator[T]) ToSlice(optimizations ...OptimizationKind) []T {
 	}
 
 	// Run the operators
-	RunDAG[T](op, optimization)
+	stream := RunDAG[T](op, optimization)
 
 	// Ouput to slice
 	if optimization&OptimizeKindBatching == 0 {
-		return ChanToSlice(op.out)
+		return ChanToSlice(stream.Out())
 	} else {
-		return BatchChanToSlice(op.batched_out)
+		return BatchChanToSlice(stream.BatchedOut())
 	}
 }
