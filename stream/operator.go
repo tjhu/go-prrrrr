@@ -44,7 +44,7 @@ func (op *Operator[T]) BatchedOut() <-chan []T {
 	return op.batched_out
 }
 
-func (op *Operator[T]) Workers(num_workers int) IStream[T] {
+func (op *Operator[T]) SetWorkers(num_workers int) IStream[T] {
 	op.num_workers = num_workers
 	return op
 }
