@@ -16,6 +16,8 @@ type IStream[T any] interface {
 	// Return the type of the stream
 	Type() StreamType
 
+	// Return a mapped stream.
+	Map(MapFn[T]) IStream[T]
 	// Returns a filtered stream.
 	Filter(FilterFn[T]) IStream[T]
 	// Materialize the stream to a slice.

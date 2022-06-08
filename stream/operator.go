@@ -152,6 +152,11 @@ func (op *Operator[T]) Filter(filter_fn FilterFn[T]) IStream[T] {
 	return &filter
 }
 
+func (op *Operator[T]) Map(map_fn MapFn[T]) IStream[T] {
+	m := makeMapOperator[T](op.num_workers, op, map_fn, op.name)
+	return &m
+}
+
 func (op *Operator[T]) ToSlice(optimizations ...OptimizationKind) []T {
 	optimization := OptimizeKindUnoptimized
 	for _, opt := range optimizations {
