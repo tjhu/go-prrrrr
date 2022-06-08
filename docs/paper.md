@@ -1,11 +1,7 @@
-# Efficient Parallel Stream Library in Go
-
-## Introduction
-
-
-
+# Introduction
 
 ## Stream 
 
 * Lazy
 * Unordered
+
