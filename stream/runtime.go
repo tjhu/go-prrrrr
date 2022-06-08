@@ -15,10 +15,6 @@ const (
 // It's ugly but I dont' have time for this.
 var BATCH_SIZE int = 1024
 
-func OptimizeBatching[T any](stream IStream[T]) IStream[[]T] {
-	panic("asd")
-}
-
 func OptimizeOperatorMerging[T any](stream IStream[T]) IStream[T] {
 	return stream
 }
