@@ -31,4 +31,6 @@ type IStream[T any] interface {
 	Filter(FilterFn[T]) IStream[T]
 	// Materialize the stream to a slice.
 	ToSlice(optimizations ...OptimizationKind) []T
+	// Count the length of the stream.
+	Count(optimizations ...OptimizationKind) int
 }

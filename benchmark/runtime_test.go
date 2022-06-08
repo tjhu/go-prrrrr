@@ -10,12 +10,11 @@ import (
 	"github.com/tjhu/go-parallelstream/stream"
 )
 
-func BenchmarkRandInt(b *testing.B) {
+func BenchmarkBatching(b *testing.B) {
 	size := int(10e6)
 
 	for _, num_threads := range []int{1, 2, 4, 8} {
-		b.Run(fmt.Sprint("workers=", num_threads), func(b *testing.B) {
-
+		b.Run(fmt.Sprint(num_threads), func(b *testing.B) {
 			// jucardi
 			b.Run("jucardi", func(b *testing.B) {
 				for i := 0; i < b.N; i++ {
@@ -51,6 +50,51 @@ func BenchmarkRandInt(b *testing.B) {
 					}
 				})
 			}
+		})
+	}
+}
+
+func BenchmarkMerging(b *testing.B) {
+	size := int(10e6)
+	add := func(x int) int { return x + 1 }
+
+	for _, depth := range []int{1, 4, 16} {
+		b.Run(fmt.Sprint("depth=", depth), func(b *testing.B) {
+			b.Run("jucardi", func(b *testing.B) {
+				for i := 0; i < b.N; i++ {
+					b.StopTimer()
+					slice := lo.Range(size)
+					b.StartTimer()
+					add := func(x interface{}) interface{} { return x.(int) + 1 }
+					stream := jucardi.FromArray(slice)
+					for i := 0; i < depth; i++ {
+						stream = stream.Map(add)
+					}
+					stream.Count()
+				}
+			})
+
+			b.Run("Unoptimized", func(b *testing.B) {
+				b.StopTimer()
+				slice := lo.Range(size)
+				b.StartTimer()
+				stream := stream.OfSlice(slice)
+				for i := 0; i < depth; i++ {
+					stream = stream.Map(add)
+				}
+				stream.Count()
+			})
+
+			b.Run("Optimized", func(b *testing.B) {
+				b.StopTimer()
+				slice := lo.Range(size)
+				b.StartTimer()
+				s := stream.OfSlice(slice)
+				for i := 0; i < depth; i++ {
+					s = s.Map(add)
+				}
+				s.Count(stream.OptimizeKindOperatorMerging)
+			})
 		})
 	}
 }

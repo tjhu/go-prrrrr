@@ -93,14 +93,14 @@ func TestBatchLargeSlice(t *testing.T) {
 		t.Run("Greater10", func(t *testing.T) {
 			slice := lo.Range(10000)
 			greater_than_ten := func(x int) bool { return x > 10 }
-			assert.Equal(t, 9989, len(OfSlice(slice).Filter(greater_than_ten).ToSlice(OptimizeKindBatching)))
+			assert.Equal(t, 9989, OfSlice(slice).Filter(greater_than_ten).Count(OptimizeKindBatching))
 		})
 
 		// Less than 10
 		t.Run("Less10", func(t *testing.T) {
 			slice := lo.Range(10000)
 			less_than_ten := func(x int) bool { return x < 10 }
-			assert.Equal(t, 10, len(OfSlice(slice).Filter(less_than_ten).ToSlice(OptimizeKindBatching)))
+			assert.Equal(t, 10, OfSlice(slice).Filter(less_than_ten).Count(OptimizeKindBatching))
 		})
 	}
 
@@ -151,12 +151,12 @@ func TestMergingAndBatching(t *testing.T) {
 	run_test := func(t *testing.T) {
 		t.Run("Half", func(t *testing.T) {
 			slice := lo.Range(10000)
-			assert.Equal(t, 5000, len(OfSlice(slice).Filter(even).Map(add).Filter(odd).ToSlice(OptimizeKindAll)))
+			assert.Equal(t, 5000, OfSlice(slice).Filter(even).Map(add).Filter(odd).Count(OptimizeKindAll))
 		})
 
 		t.Run("Whole", func(t *testing.T) {
 			slice := lo.Range(10000)
-			assert.Equal(t, 10000, len(OfSlice(slice).Map(multiply).Filter(even).Map(add).Filter(odd).ToSlice(OptimizeKindBatching)))
+			assert.Equal(t, 10000, OfSlice(slice).Map(multiply).Filter(even).Map(add).Filter(odd).Count(OptimizeKindAll))
 		})
 	}
 

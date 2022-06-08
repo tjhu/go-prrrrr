@@ -194,3 +194,20 @@ func (op *Operator[T]) ToSlice(optimizations ...OptimizationKind) []T {
 		return BatchChanToSlice(stream.BatchedOut())
 	}
 }
+
+func (op *Operator[T]) Count(optimizations ...OptimizationKind) int {
+	optimization := OptimizeKindUnoptimized
+	for _, opt := range optimizations {
+		optimization |= opt
+	}
+
+	// Run the operators
+	stream := RunDAG[T](op, optimization)
+
+	// Ouput to slice
+	if optimization&OptimizeKindBatching == 0 {
+		return ChanCount(stream.Out())
+	} else {
+		return BatchChanCount(stream.BatchedOut())
+	}
+}
