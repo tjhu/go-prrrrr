@@ -39,15 +39,18 @@ func BenchmarkRandInt(b *testing.B) {
 			})
 
 			// Batching
-			b.Run("Batching", func(b *testing.B) {
-				for i := 0; i < b.N; i++ {
-					b.StopTimer()
-					slice := lo.Range(size)
-					b.StartTimer()
-					less_than_ten := func(x int) bool { return x < 10 }
-					stream.OfSlice(slice).Filter(less_than_ten).Workers(num_threads).ToSlice(stream.OptimizeKindBatching)
-				}
-			})
+			for _, batch_size := range []int{128, 512, 1024, 2048, 8192} {
+				stream.BATCH_SIZE = batch_size
+				b.Run(fmt.Sprint("Batching", batch_size), func(b *testing.B) {
+					for i := 0; i < b.N; i++ {
+						b.StopTimer()
+						slice := lo.Range(size)
+						b.StartTimer()
+						less_than_ten := func(x int) bool { return x < 10 }
+						stream.OfSlice(slice).Filter(less_than_ten).Workers(num_threads).ToSlice(stream.OptimizeKindBatching)
+					}
+				})
+			}
 		})
 	}
 }
