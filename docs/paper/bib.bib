@@ -16,3 +16,21 @@ articleno = {168},
 numpages = {29},
 keywords = {Java 8, program optimization, static program analysis}
 }
+
+@inproceedings{scala-jit,
+author = {Prokopec, Aleksandar and Leopoldseder, David and Duboscq, Gilles and W\"{u}rthinger, Thomas},
+title = {Making Collection Operations Optimal with Aggressive JIT Compilation},
+year = {2017},
+isbn = {9781450355292},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3136000.3136002},
+doi = {10.1145/3136000.3136002},
+abstract = { Functional collection combinators are a neat and widely accepted data processing abstraction. However, their generic nature results in high abstraction overheads -- Scala collections are known to be notoriously slow for typical tasks. We show that proper optimizations in a JIT compiler can widely eliminate overheads imposed by these abstractions. Using the open-source Graal JIT compiler, we achieve speedups of up to 20x on collection workloads compared to the standard HotSpot C2 compiler. Consequently, a sufficiently aggressive JIT compiler allows the language compiler, such as Scalac, to focus on other concerns.  In this paper, we show how optimizations, such as inlining, polymorphic inlining, and partial escape analysis, are combined in Graal to produce collections code that is optimal with respect to manually written code, or close to optimal. We argue why some of these optimizations are more effectively done by a JIT compiler. We then identify specific use-cases that most current JIT compilers do not optimize well, warranting special treatment from the language compiler. },
+booktitle = {Proceedings of the 8th ACM SIGPLAN International Symposium on Scala},
+pages = {29–40},
+numpages = {12},
+keywords = {partial escape analysis, functional combinators, collections, inlining, JIT compilation, data-parallelism, program optimization, iterators, scalar replacement},
+location = {Vancouver, BC, Canada},
+series = {SCALA 2017}
+}

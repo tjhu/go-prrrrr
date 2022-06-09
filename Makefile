@@ -6,6 +6,7 @@ paper.pdf:
 		--from=markdown \
 		--citeproc \
 		--bibliography=${DATA_DIR}/bib.bib \
+		--csl=${DATA_DIR}/acm-sig-proceedings.csl \
 		--filter pandoc-mermaid \
 		${DATA_DIR}/header.tex \
 		${DATA_DIR}/metadata.yml \
