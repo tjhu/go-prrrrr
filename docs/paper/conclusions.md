@@ -1,5 +1,3 @@
 # Conclusions
 
 ## Acknowledgements
-
-# Bibliography

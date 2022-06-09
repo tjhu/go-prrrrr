@@ -17,4 +17,5 @@ paper.pdf:
 		${DATA_DIR}/impl.md \
 		${DATA_DIR}/eval.md \
 		${DATA_DIR}/conclusions.md \
+		${DATA_DIR}/bib.md \
 		--output=paper.pdf 
