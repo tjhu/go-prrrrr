@@ -8,8 +8,6 @@ author: Tianjiao Huang
 institute: University of California, Irvine
 keywords: [nothing, nothingness]
 abstract: |
-  \newcommand{\prr}{\textit{go-prrrrr}}
-  \newcommand{\go}{Golang}
   \prr{}(**Go**lang **P**a**r**allel St**r**eam P**r**ocessing Lib**r**a**r**y) is a scalable parallel stream library in \go{} for efficient data pipelines.
   \go{} is known for building efficient large scale server applications with extensive use of asynchronous I/O because of go-routines(green threads) and go-channels(multiple-producer-multiple-consumer queues) are first-class citizens in \go{}.
   \prr{} makes use of these unique language features to experiment with various runtime optimizations of stream processing.

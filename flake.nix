@@ -16,6 +16,7 @@
         buildInputs = with pkgs; [
           texlive.combined.scheme-full
           pandoc
+          haskellPackages.pandoc-crossref
         ];  
       };
     }
