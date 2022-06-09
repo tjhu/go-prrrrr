@@ -2,3 +2,6 @@ go-parallelstream
 *.test
 paper.pdf
 paper.tex
+node_modules
+mermaid-images
+*.err
