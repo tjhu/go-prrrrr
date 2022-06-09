@@ -1,4 +1,4 @@
-module github.com/tjhu/go-parallelstream
+module github.com/tjhu/go-prrrrr
 
 go 1.18
 

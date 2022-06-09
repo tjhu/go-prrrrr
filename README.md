@@ -1,6 +1,6 @@
-# go-parallelstream
+# go-prrrrr
 
-[![.github/workflows/test.yml](https://github.com/tjhu/go-parallelstream/actions/workflows/test.yml/badge.svg)](https://github.com/tjhu/go-parallelstream/actions/workflows/test.yml)
+[![.github/workflows/test.yml](https://github.com/tjhu/go-prrrrr/actions/workflows/test.yml/badge.svg)](https://github.com/tjhu/go-prrrrr/actions/workflows/test.yml)
 
 ## How to run
 

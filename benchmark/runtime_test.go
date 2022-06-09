@@ -8,7 +8,7 @@ import (
 	jucardi "github.com/jucardi/go-streams/streams"
 	"github.com/samber/lo"
 	log "github.com/sirupsen/logrus"
-	"github.com/tjhu/go-parallelstream/stream"
+	"github.com/tjhu/go-prrrrr/stream"
 )
 
 const SIZE int = 10e6
