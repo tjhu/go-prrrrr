@@ -6,8 +6,9 @@ For simplicity, we only consider the scenario where operators can only take one 
 We also assume that the types of all operators in the same stream are the same.
 Besides the intermediate and terminal stream operation methods, streams also expose methods to query the worker function and the parent to enable possible optimizations. 
 
-## Data Passing
+## Parallel Processing and Data Passing
 
+The worker functions at each operator run in their own \gor{}s. 
 Unlike most other stream libraries, instead of using an iterator pattern to pass data around, \prr{} make use of \goc{}s to allow efficient data flow in the streams. 
 This could be more efficient than Java stream's implementation because no virtual call is necessary to pass data through \goc{}s.
 In contrary, it requires $O(N * K)$ number of virtual calls in Java to pass elements around for a stream with $N$ elements and depth of $K$ @aot.
