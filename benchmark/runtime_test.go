@@ -16,11 +16,12 @@ const SIZE int = 10e6
 func BenchmarkBatching(b *testing.B) {
 	less_than_ten := func(x int) bool { return x < 10 }
 
-	for _, num_threads := range []int{1, 2, 4, 8} {
+	for _, num_threads := range []int{1, 4, 16, 32, 64} {
 		b.Run(fmt.Sprint(num_threads), func(b *testing.B) {
 			// jucardi
 			b.Run("jucardi", func(b *testing.B) {
 				for i := 0; i < b.N; i++ {
+					b.Skip()
 					b.StopTimer()
 					slice := lo.Range(SIZE)
 					b.StartTimer()
@@ -40,7 +41,7 @@ func BenchmarkBatching(b *testing.B) {
 			})
 
 			// Batching
-			for _, batch_size := range []int{128, 512, 1024, 2048, 8192} {
+			for _, batch_size := range []int{32, 64, 512, 1024} {
 				stream.BATCH_SIZE = batch_size
 				b.Run(fmt.Sprint("Batching", batch_size), func(b *testing.B) {
 					for i := 0; i < b.N; i++ {
@@ -58,9 +59,10 @@ func BenchmarkBatching(b *testing.B) {
 func BenchmarkMerging(b *testing.B) {
 	add := func(x int) int { return x + 1 }
 
-	for _, depth := range []int{1, 4, 16} {
-		b.Run(fmt.Sprint("depth=", depth), func(b *testing.B) {
+	for _, depth := range []int{1, 4, 16, 32, 64} {
+		b.Run(fmt.Sprint(depth), func(b *testing.B) {
 			b.Run("jucardi", func(b *testing.B) {
+				b.Skip()
 				for i := 0; i < b.N; i++ {
 					b.StopTimer()
 					slice := lo.Range(SIZE)
@@ -132,7 +134,7 @@ func BenchmarkAllOptimization(b *testing.B) {
 	for _, workload := range workloads {
 		b.Run(workload.name, func(b *testing.B) {
 			for _, depth := range []int{1, 4, 16} {
-				b.Run(fmt.Sprint("depth=", depth), func(b *testing.B) {
+				b.Run(fmt.Sprint(depth), func(b *testing.B) {
 					b.Run("jucardi", func(b *testing.B) {
 						b.Skip()
 						for i := 0; i < b.N; i++ {
