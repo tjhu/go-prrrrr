@@ -5,9 +5,7 @@ It allows programmers to express complex data pipelines in concise and readable 
 leaving rooms for optimizations for the compiler and the runtime.
 Stream libraries typically allow users to create a stream of data from any data source.
 A stream can flow into one or more downstream operators.
-Each operator process one or more input streams and return one or more output streams.
-Operators that do not generate immediate results, such as `Map()`, `Filter()`, and `Shuffle()`, are known as the intermediate operators.
-The other operators are known as the terminal operators, such as `Count()`, `ToArray()`, and `ToFile()`.
+Programmers can chain an arbitrary number of streams and operators together to form complex data pipelines. 
 
 Some of the most widely used stream processing libraries are Java's stream, C#'s LINQ, Scala's view, Rust's Iterator, and Python's functional.
 Most of these libraries will lazily execute the intermediate stages to allow the runtime to optimize the DAG to allow faster execution.

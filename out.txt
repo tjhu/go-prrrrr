@@ -2,52 +2,22 @@ goos: linux
 goarch: amd64
 pkg: github.com/tjhu/go-prrrrr/benchmark
 cpu: AMD EPYC 7542 32-Core Processor                
-BenchmarkBatching/1/Unoptimized                1        1913535770 ns/op
-BenchmarkBatching/1/Batching32                10         109901138 ns/op
-BenchmarkBatching/1/Batching64                14          77992141 ns/op
-BenchmarkBatching/1/Batching512               24          49019728 ns/op
-BenchmarkBatching/1/Batching1024              25          46980367 ns/op
-BenchmarkBatching/4/Unoptimized                1        1926196758 ns/op
-BenchmarkBatching/4/Batching32                10         108035073 ns/op
-BenchmarkBatching/4/Batching64                14          77499009 ns/op
-BenchmarkBatching/4/Batching512               24          49062980 ns/op
-BenchmarkBatching/4/Batching1024              25          47029289 ns/op
-BenchmarkBatching/16/Unoptimized               1        1919172534 ns/op
-BenchmarkBatching/16/Batching32               10         110573311 ns/op
-BenchmarkBatching/16/Batching64               14          77457402 ns/op
-BenchmarkBatching/16/Batching512              24          49081788 ns/op
-BenchmarkBatching/16/Batching1024             25          47094917 ns/op
-BenchmarkBatching/32/Unoptimized               1        1931302934 ns/op
-BenchmarkBatching/32/Batching32               10         111650226 ns/op
-BenchmarkBatching/32/Batching64               14          77837018 ns/op
-BenchmarkBatching/32/Batching512              24          49082994 ns/op
-BenchmarkBatching/32/Batching1024             25          47113578 ns/op
-BenchmarkBatching/64/Unoptimized               1        1924471222 ns/op
-BenchmarkBatching/64/Batching32               10         110883917 ns/op
-BenchmarkBatching/64/Batching64               14          77886582 ns/op
-BenchmarkBatching/64/Batching512              24          49155099 ns/op
-BenchmarkBatching/64/Batching1024             25          47074437 ns/op
-BenchmarkMerging/depth=1/Unoptimized                   1        3659929652 ns/op
-BenchmarkMerging/depth=1/Optimized                     1        3646939692 ns/op
-BenchmarkMerging/depth=4/Unoptimized                   1        9424799772 ns/op
-BenchmarkMerging/depth=4/Optimized                     1        3784928820 ns/op
-BenchmarkMerging/depth=16/Unoptimized                  1        31908055384 ns/op
-BenchmarkMerging/depth=16/Optimized                    1        4641361187 ns/op
-BenchmarkMerging/depth=32/Unoptimized                  1        62394587023 ns/op
-BenchmarkMerging/depth=32/Optimized                    1        5408947601 ns/op
-BenchmarkMerging/depth=64/Unoptimized                  1        122180799270 ns/op
-BenchmarkMerging/depth=64/Optimized                    1        6871126197 ns/op
-BenchmarkAllOptimization/small/depth=1/Unoptimized             1        3580482518 ns/op
-BenchmarkAllOptimization/small/depth=1/Optimized               1        3581559244 ns/op
-BenchmarkAllOptimization/small/depth=4/Unoptimized             1        9332289506 ns/op
-BenchmarkAllOptimization/small/depth=4/Optimized               1        3753080497 ns/op
-BenchmarkAllOptimization/small/depth=16/Unoptimized            1        32186833466 ns/op
-BenchmarkAllOptimization/small/depth=16/Optimized              1        4517220446 ns/op
-BenchmarkAllOptimization/big/depth=1/Unoptimized               1        7192578091 ns/op
-BenchmarkAllOptimization/big/depth=1/Optimized                 1        7136594381 ns/op
-BenchmarkAllOptimization/big/depth=4/Unoptimized               1        23592097936 ns/op
-BenchmarkAllOptimization/big/depth=4/Optimized                 1        17678248396 ns/op
-BenchmarkAllOptimization/big/depth=16/Unoptimized              1        91647181382 ns/op
-BenchmarkAllOptimization/big/depth=16/Optimized                1        60799339256 ns/op
-PASS
-ok      github.com/tjhu/go-prrrrr/benchmark     558.869s
+BenchmarkBatching/1/Unoptimized     	       1	1899499604 ns/op
+BenchmarkBatching/1/Batching32      	      10	 106516136 ns/op
+BenchmarkBatching/1/Batching64      	      15	  73740671 ns/op
+BenchmarkBatching/1/Batching512     	      26	  45005015 ns/op
+BenchmarkBatching/1/Batching1024    	      27	  42962288 ns/op
+BenchmarkBatching/2/Unoptimized     	       1	1940314782 ns/op
+BenchmarkBatching/2/Batching32      	      10	 107228850 ns/op
+BenchmarkBatching/2/Batching64      	      15	  74167711 ns/op
+BenchmarkBatching/2/Batching512     	      26	  46303869 ns/op
+BenchmarkBatching/2/Batching1024    	      27	  43013106 ns/op
+BenchmarkBatching/4/Unoptimized     	       1	1948567819 ns/op
+BenchmarkBatching/4/Batching32      	      10	 106973325 ns/op
+BenchmarkBatching/4/Batching64      	      15	  74426260 ns/op
+BenchmarkBatching/4/Batching512     	      26	  45240790 ns/op
+BenchmarkBatching/4/Batching1024    	      27	  43009290 ns/op
+BenchmarkBatching/8/Unoptimized     	       1	1961515179 ns/op
+BenchmarkBatching/8/Batching32      	      10	 107388090 ns/op
+BenchmarkBatching/8/Batching64      	      15	  74265304 ns/op
+BenchmarkBatching/8/Batching512     	

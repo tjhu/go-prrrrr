@@ -16,7 +16,7 @@ const SIZE int = 10e6
 func BenchmarkBatching(b *testing.B) {
 	less_than_ten := func(x int) bool { return x < 10 }
 
-	for _, num_threads := range []int{1, 4, 16, 32, 64} {
+	for _, num_threads := range []int{1, 2, 4, 8, 16, 32, 64} {
 		b.Run(fmt.Sprint(num_threads), func(b *testing.B) {
 			// jucardi
 			b.Run("jucardi", func(b *testing.B) {
@@ -59,7 +59,7 @@ func BenchmarkBatching(b *testing.B) {
 func BenchmarkMerging(b *testing.B) {
 	add := func(x int) int { return x + 1 }
 
-	for _, depth := range []int{1, 4, 16, 32, 64} {
+	for _, depth := range []int{1, 2, 4, 8, 16} {
 		b.Run(fmt.Sprint(depth), func(b *testing.B) {
 			b.Run("jucardi", func(b *testing.B) {
 				b.Skip()
@@ -111,7 +111,7 @@ func BenchmarkAllOptimization(b *testing.B) {
 		return result
 	}
 	sin := func(x int) int {
-		const DEPTH int = 10
+		const DEPTH int = 3
 		negative := 1
 		result := 0
 
@@ -133,44 +133,48 @@ func BenchmarkAllOptimization(b *testing.B) {
 
 	for _, workload := range workloads {
 		b.Run(workload.name, func(b *testing.B) {
-			for _, depth := range []int{1, 4, 16} {
-				b.Run(fmt.Sprint(depth), func(b *testing.B) {
-					b.Run("jucardi", func(b *testing.B) {
-						b.Skip()
-						for i := 0; i < b.N; i++ {
-							b.StopTimer()
-							slice := lo.Range(SIZE)
-							b.StartTimer()
-							add := func(x interface{}) interface{} { return x.(int) + 1 }
-							stream := jucardi.FromArray(slice)
-							for i := 0; i < depth; i++ {
-								stream = stream.Map(add)
-							}
-							stream.Count()
-						}
-					})
+			for _, num_threads := range []int{1, 2, 4, 8, 16, 32, 64} {
+				b.Run(fmt.Sprint(num_threads), func(b *testing.B) {
+					for _, depth := range []int{8} {
+						b.Run(fmt.Sprint(depth), func(b *testing.B) {
+							b.Run("jucardi", func(b *testing.B) {
+								b.Skip()
+								for i := 0; i < b.N; i++ {
+									b.StopTimer()
+									slice := lo.Range(SIZE)
+									b.StartTimer()
+									add := func(x interface{}) interface{} { return x.(int) + 1 }
+									stream := jucardi.FromArray(slice)
+									for i := 0; i < depth; i++ {
+										stream = stream.Map(add)
+									}
+									stream.Count()
+								}
+							})
 
-					b.Run("Unoptimized", func(b *testing.B) {
-						b.StopTimer()
-						slice := lo.Range(SIZE)
-						b.StartTimer()
-						stream := stream.OfSlice(slice)
-						for i := 0; i < depth; i++ {
-							stream = stream.Map(workload.fn)
-						}
-						stream.Count()
-					})
+							b.Run("Unoptimized", func(b *testing.B) {
+								b.StopTimer()
+								slice := lo.Range(SIZE)
+								b.StartTimer()
+								stream := stream.OfSlice(slice)
+								for i := 0; i < depth; i++ {
+									stream = stream.Map(workload.fn).SetWorkers(num_threads)
+								}
+								stream.Count()
+							})
 
-					b.Run("Optimized", func(b *testing.B) {
-						b.StopTimer()
-						slice := lo.Range(SIZE)
-						b.StartTimer()
-						s := stream.OfSlice(slice)
-						for i := 0; i < depth; i++ {
-							s = s.Map(workload.fn)
-						}
-						s.Count(stream.OptimizeKindOperatorMerging)
-					})
+							b.Run("Optimized", func(b *testing.B) {
+								b.StopTimer()
+								slice := lo.Range(SIZE)
+								b.StartTimer()
+								s := stream.OfSlice(slice)
+								for i := 0; i < depth; i++ {
+									s = s.Map(workload.fn).SetWorkers(num_threads)
+								}
+								s.Count(stream.OptimizeKindOperatorMerging)
+							})
+						})
+					}
 				})
 			}
 		})
