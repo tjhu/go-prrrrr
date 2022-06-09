@@ -10,9 +10,7 @@ keywords: [nothing, nothingness]
 abstract: |
   \newcommand{\prr}{\textit{go-prrrrr}}
   \newcommand{\go}{Golang}
-  \prr{}(__Go__ **P**a**r**allel St**r**eam P**r**ocessing Lib**r**a**r**y) is a scalable parallel stream library in \go{} for efficient data pipelines.
-  \go{} is known for building efficient large scale server applications with extensive use of asynchronous I/O because of go-routines(green threads) and go-channels(mpmc queues) are first-class citizens in \go{}.
-  However
-  This library is a proof-of-concept of various runtime optimizations of stream processing.
-  \prr{} allows programmers to express complex pipelines concisely without sacrificing performance.
+  \prr{}(**Go**lang **P**a**r**allel St**r**eam P**r**ocessing Lib**r**a**r**y) is a scalable parallel stream library in \go{} for efficient data pipelines.
+  \go{} is known for building efficient large scale server applications with extensive use of asynchronous I/O because of go-routines(green threads) and go-channels(multiple-producer-multiple-consumer queues) are first-class citizens in \go{}.
+  \prr{} makes use of these unique language features to experiment with various runtime optimizations of stream processing.
 ...
