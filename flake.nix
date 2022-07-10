@@ -1,5 +1,5 @@
 {
-  description = "Kmer counter";
+  description = "Go Prrrr";
 
   inputs = {
     mars-std.url = "github:mars-research/mars-std";
